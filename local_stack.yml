@@ -1,0 +1,59 @@
+version: "3.2"
+
+services:
+
+  ui:
+    image: twotimesagnew/php:1.0
+#    command: bash -c "cp ./.env.example ./.env &&
+#             composer install &&
+#             php artisan key:generate &&
+#             php artisan serve --host=0.0.0.0 --port=80"
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    volumes:
+      - type: bind
+        source: ~/projects/gti619/ui
+        target: /var/www/html/
+
+  otp:
+    image: twotimesagnew/phalcon:1.0
+    command: bash -c "composer install &&
+             php -S 0.0.0.0:80 -t /var/www/html/public .htrouter.php"
+    ports:
+      - "8000:80"
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - type: bind
+        source: ~/projects/gti619/otp
+        target: /var/www/html
+
+  mysql:
+    image: mariadb:10.3.7
+    environment:
+        MYSQL_DATABASE: db_gti619
+        MYSQL_USER: admin
+        MYSQL_PASSWORD: admin
+        MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: volume
+        source: mysql_data
+        target: /var/lib/mysql
+
+  redis:
+    image: redis:4.0.10
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
+
+networks:
+  default:
+    driver: overlay
+    attachable: true
