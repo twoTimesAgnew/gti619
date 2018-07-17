@@ -51,7 +51,7 @@ $ sudo apt-get update
 ```
 ##### Install docker
 ```
-##### sudo apt-get install docker-ce
+$ sudo apt-get install docker-ce
 ```
 ##### Add yourself to docker group to avoid sudo on every command
 ```
