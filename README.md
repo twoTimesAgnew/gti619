@@ -67,10 +67,14 @@ Docker version 18.05.0-ce, build f150324
 ## Project Setup
 
 ##### Clone the project from github  
-`git clone http://github.com/twotimesagnew/gti619.git`
+```
+$ git clone http://github.com/twotimesagnew/gti619.git
+```
 
 ##### cd into the directory or open the project in an IDE  
-`cd /path/to/project`
+```
+$ cd /path/to/project
+````
 
 ##### Open local_stack.yml file, and modify the source path to the project path that you just cloned:
 ```yaml
@@ -84,13 +88,15 @@ volumes:
 **DO NOT TOUCH TARGET, ONLY SOURCE**
 
 ##### Initialize the docker swarm:  
-`docker swarm init`
+```
+$ docker swarm init
+```
 
 ## Deploying our stack:  
 
-`docker stack deploy -c local_stack.yml gti`  
-  
-    
+```
+$ docker stack deploy -c local_stack.yml gti
+```  
 The installation will take a long time the first time because all of the images need to be downloaded. You can  
 track the progress by running `watch docker images`. Once you have mariadb, redis, laravel and phalcon, they  
 will start running composer install which will install the dependencies for both frameworks. This will also  
@@ -98,15 +104,15 @@ take a long time. **Expect to wait ~10 mins the first time.** Re-deployments aft
 almost instantaneous.
 
 ##### Once all images are downloaded, check the status by running:  
-`docker service ls`  
-  
-  
+```
+$ docker service ls
+```  
 All services should be showing `1/1` in the **Replicas** field
 
 ##### If you need to check logs for a specific service, you can run the following:  
-`docker service logs <service_name> -f`  
-  
-  
+```
+$ docker service logs <service_name> -f
+```  
 This will show you all the `stdout` and `stderr` output.  
 For example, `docker service logs gti_ui -f` will show everything happening as if you were checking laravel logs
 
