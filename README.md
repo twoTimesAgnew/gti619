@@ -2,7 +2,7 @@
 
 ## Technical Specs
 This project uses the following technologies:
-* Laravel (`version 5.2`)
+* Laravel (`version 5.6.27`)
 * Docker CE (`version 18.03.1-ce, build 9ee9f40`)
 * docker-compose (`version 1.21.2, build a133471`)
 * MariaDB (`version 10.3.17`) &rarr; There are currently issues with mysql 8+ and Laravel
