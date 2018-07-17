@@ -3,11 +3,19 @@ version: "3.2"
 services:
 
   ui:
-    image: twotimesagnew/php:1.0
-#    command: bash -c "cp ./.env.example ./.env &&
-#             composer install &&
-#             php artisan key:generate &&
-#             php artisan serve --host=0.0.0.0 --port=80"
+    image: twotimesagnew/laravel:latest
+    command: bash -c "cp ./.env.example ./.env &&
+             composer install &&
+             php artisan key:generate &&
+             php artisan serve --host=0.0.0.0 --port=80"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 1
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: db_gti619
+      DB_USERNAME: admin
+      DB_PASSWORD: admin
     ports:
       - "8080:80"
     depends_on:
@@ -15,7 +23,7 @@ services:
     volumes:
       - type: bind
         source: ~/projects/gti619/ui
-        target: /var/www/html/
+        target: /var/www/html/ui
 
   otp:
     image: twotimesagnew/phalcon:1.0
@@ -29,7 +37,7 @@ services:
     volumes:
       - type: bind
         source: ~/projects/gti619/otp
-        target: /var/www/html
+        target: /var/www/html/otp
 
   mysql:
     image: mariadb:10.3.7

@@ -1,5 +1,9 @@
 # Ignore PHPStorm files
 .idea
 
-# Ignore vendors
-vendor
+# Ignore Laravel files
+ui/vendor
+ui/.env
+
+# Ignore Phalcon files
+otp/vendor
