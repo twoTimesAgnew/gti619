@@ -2,17 +2,67 @@
 
 ## Technical Specs
 This project uses the following technologies:
+* Docker CE (`version 18.05.0-ce, build f150324`)
+* PHP (`version 7.2.7`)
 * Laravel (`version 5.6.27`)
-* Docker CE (`version 18.03.1-ce, build 9ee9f40`)
-* docker-compose (`version 1.21.2, build a133471`)
 * MariaDB (`version 10.3.17`) &rarr; There are currently issues with mysql 8+ and Laravel
-* PHP (`version 7.2`)
+* Redis (`version 4.0.10`)
 
 Tested on `Ubuntu 16.04 LTS and Ubuntu 18.04`  
 #### Side Note
 I recommend running this project on a Linux distro as the latest version of Docker For Windows  
-has a pretty serious memory leak which gets worse when deploying a stack (like in this project). 
+has a pretty serious memory leak when deploying a stack (like in this project). 
 
+## Requirements
+
+The only thing required to run this project is Docker CE. If you're on Windows (you shouldn't be)  
+simply go to [the following url](https://store.docker.com/editions/community/docker-ce-desktop-windows "Docker Store"), create an account and download for free.  
+  
+If you're on ArchLinux (looking at you Guillaume) then have fun following [this link.](https://wiki.archlinux.org/index.php/Docker#Installation "ArchLinux Docker Installation")  
+  
+  
+If you're on a normal Debian Linux installation then do the following:  
+##### Update packages
+```
+$ sudo apt-get update
+```
+##### Install required utils
+```
+$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+```    
+##### Get the repository key
+```
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+##### Add the repository
+```
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+```
+##### Update packages
+```
+$ sudo apt-get update
+```
+##### Install docker
+```
+##### sudo apt-get install docker-ce
+```
+##### Add yourself to docker group to avoid sudo on every command
+```
+$ sudo usermod -aG docker $USER
+```
+Restart the VM. If you're not in a VM, logout and log back in.
+##### Check the docker version
+```
+$ docker --version
+Docker version 18.05.0-ce, build f150324
+```
 
 ## Project Setup
 
