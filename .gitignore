@@ -1,9 +1,15 @@
 # Ignore PHPStorm files
 .idea
 
+########## UI ##########
 # Ignore Laravel files
 ui/vendor
 ui/.env
+########## UI ##########
 
+########## OTP ##########
 # Ignore Phalcon files
 otp/vendor
+otp/app/logs/*
+!otp/app/logs/.gitkeep
+########## OTP ##########

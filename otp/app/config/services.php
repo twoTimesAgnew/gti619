@@ -2,6 +2,7 @@
 
 use Phalcon\Mvc\View\Simple as View;
 use Phalcon\Mvc\Url as UrlResolver;
+use Phalcon\Logger\Adapter\File as Logger;
 
 /**
  * Shared configuration service
@@ -32,27 +33,27 @@ $di->setShared('url', function () {
     return $url;
 });
 
-/**
- * Database connection is created based in the parameters defined in the configuration file
- */
-$di->setShared('db', function () {
+$di->setShared('redis', function () {
     $config = $this->getConfig();
 
-    $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database->adapter;
-    $params = [
-        'host'     => $config->database->host,
-        'username' => $config->database->username,
-        'password' => $config->database->password,
-        'dbname'   => $config->database->dbname,
-        'charset'  => $config->database->charset
-    ];
+    $redis = new Redis();
+    $redis->connect($config['redis']['host'], $config['redis']['port'],
+                    $config['redis']['timeout'], NULL, $config['redis']['retryInterval']);
+    $redis->select(0);
 
-    if ($config->database->adapter == 'Postgresql') {
-        unset($params['charset']);
-    }
+    return $redis;
+});
 
-    $connection = new $class($params);
+/** * Sets shared loggers */
+$di->setShared('apiLogger', function () {
+    $config = $this->getConfig();
+    $logger = new Logger($config->logs->api);
+    return $logger;
+});
 
-    return $connection;
+$di->setShared('errorLogger', function () {
+    $config = $this->getConfig();
+    $logger = new Logger($config->logs->error);
+    return $logger;
 });
 
