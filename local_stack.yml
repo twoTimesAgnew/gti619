@@ -3,12 +3,13 @@ version: "3.2"
 services:
 
   ui:
-    image: twotimesagnew/laravel:latest
+    image: laravel:latest
     command: bash -c "cp .env.example .env &&
              composer install &&
              php artisan key:generate &&
-             php artisan serve --host=0.0.0.0 --port=80" 2>&1
+             apache2-foreground"
     environment:
+      APP_NAME: Sober Sec
       APP_ENV: local
       APP_DEBUG: 1
       DB_HOST: mysql
@@ -16,27 +17,17 @@ services:
       DB_DATABASE: db_gti619
       DB_USERNAME: admin
       DB_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
-      - "8080:80"
-    depends_on:
-      - mysql
-    volumes:
-      - type: bind
-        source: /home/vic/projects/gti619/ui
-        target: /var/www/html
-
-  otp:
-    image: twotimesagnew/phalcon:latest
-    command: bash -c "composer install &&
-             php -S 0.0.0.0:80 -t /var/www/html/public .htrouter.php" 2>&1
-    ports:
-      - "8000:80"
+      - "80:80"
+      - "443:443"
     depends_on:
       - mysql
       - redis
     volumes:
       - type: bind
-        source: ~/projects/gti619/otp
+        source: /home/vic/projects/gti619/ui
         target: /var/www/html
 
   mysql:

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -18,8 +22,6 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
-
     /**
      * Where to redirect users after login.
      *
@@ -28,12 +30,49 @@ class LoginController extends Controller
     protected $redirectTo = '/home';
 
     /**
-     * Create a new controller instance.
+     * Show the application dashboard.
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
-    public function __construct()
+    public function index()
     {
-        $this->middleware('guest')->except('logout');
+        if(Cookie::get('sober_sec_session') && session()->exists(Cookie::get('sober_sec_session')))
+        {
+            return redirect('home');
+        }
+
+        return view('auth/login');
     }
+
+    public function validateLogin(Request $request)
+    {
+        $username = $request->get("username");
+        $password = $request->get("password");
+
+        $alt = User::where('username', $username)->value('salt');
+        if (hash('sha256', $password.$alt) === User::where('username', $username)->value('password'))
+        {
+            Log::channel('connections')->info("[$username] successfully authenticated from [" . $request->ip() . "]");
+            session()->put($request->cookie('sober_sec_session'), $username);
+            session()->put('username', $username);
+            return redirect('home');
+        }
+
+        Log::channel('connections')->error("Invalid password was entered for [$username] from [" . $request->ip() . "]");
+
+        # Add invalid attempts logic
+    }
+
+    public function logout()
+    {
+        if(Cookie::get('sober_sec_session') && session()->exists(Cookie::get('sober_sec_session')))
+        {
+            Log::channel('connections')->info("[" . session()->get('username') . "] signing out.");
+            session()->flush();
+            Log::channel('connections')->info("Session flushed successfully.");
+            return redirect('login');
+        }
+    }
+
+
 }

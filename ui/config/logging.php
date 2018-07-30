@@ -35,7 +35,19 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['security', 'connections'],
+        ],
+
+        'security' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/security.log'),
+            'level' => 'debug',
+        ],
+
+        'connections' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/connections.log'),
+            'level' => 'debug',
         ],
 
         'single' => [
