@@ -29,9 +29,13 @@ Route::middleware('session')->group(function() {
     # Reauthentication
     Route::get('reauthenticate', 'ReauthenticateController@reauthenticate')->name('reauthenticate');
     Route::post('reauthenticate', 'ReauthenticateController@processReauthenticate')->name('processReauthentication');
+
+    # Security
+    Route::post('/security', 'SecurityController@update')->name('updateSecurity');
+    Route::post('/security/password', 'SecurityController@password')->name('updatePassword');
 });
 
-Route::middleware(['session', 'reauthenticate'])->group(function() {
+Route::middleware(['session', 'rbac', 'reauthenticate'])->group(function() {
     # Reauthenticate before changing security settings
     Route::get('/security', 'SecurityController@index')->name('security');
 

@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'session' => \App\Http\Middleware\SessionHandler::class,
         'reauthenticate' => \App\Http\Middleware\Reauthenticate::class,
+        'rbac' => \App\Http\Middleware\RoleBasedAccessControl::class,
     ];
 }

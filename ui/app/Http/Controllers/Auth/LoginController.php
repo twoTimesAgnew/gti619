@@ -71,6 +71,12 @@ class LoginController extends Controller
         # Validate password
         if (hash('sha256', $password.$alt) === User::where('username', $username)->value('password'))
         {
+
+            if(Redis::exists("attempts.{$request->ip()}:$username"))
+            {
+                Redis::del("attempts.{$request->ip()}:$username");
+            }
+
             Log::channel('connections')->info("[$username] successfully authenticated from [" . $request->ip() . "]");
             session()->put($request->cookie('sober_sec_session'), $username);
             session()->put('username', $username);
@@ -79,16 +85,25 @@ class LoginController extends Controller
         }
 
         # Password did not match
-        Log::channel('connections')->error("Invalid password was entered for [$username] from [" . $request->ip() . "]");
-
         # IP + user already has a failed login within last 120 secs
         if(Redis::exists("attempts.{$request->ip()}:$username"))
         {
             $attempts = Redis::get("attempts.{$request->ip()}:$username");
+            $maxAttempts = (int) Setting::value('pass_attempts');
+            $numLeft = $maxAttempts-$attempts;
+
+            Log::channel('connections')->error("Invalid password was entered for [$username] from [" . $request->ip() . "] $numLeft attempts remaining.");
 
             # If current failed attempt == max attempts
-            if($attempts+1 == Setting::value('pass_attempts'))
+            if($attempts+1 == $maxAttempts)
             {
+                Log::channel('connections')->error("[$username] from [" . $request->ip() . "] locked out due to max attempts being reached.");
+                if($username !== 'Administrateur')
+                {
+                    $user = User::where('username', $username)->first();
+                    $user->password = hash('sha256', hash('sha256', str_random(26)).$user->salt);
+                    $user->save();
+                }
                 return back()->with('message', 'Max number of attempts reached. Please contact an administrator for assistance.');
             }
             else

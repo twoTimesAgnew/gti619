@@ -3,7 +3,7 @@ version: "3.2"
 services:
 
   ui:
-    image: laravel:latest
+    image: twotimesagnew/laravel:latest
     command: bash -c "cp .env.example .env &&
              composer install &&
              php artisan key:generate &&

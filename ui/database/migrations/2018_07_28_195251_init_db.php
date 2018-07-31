@@ -39,8 +39,10 @@ class InitDb extends Migration
             $table->increments('id');
             $table->integer('pass_attempts');
             $table->integer('pass_attempts_delay');
-            $table->string('pass_struct');
-            $table->boolean('2fa');
+            $table->string('pass_max_length')->nullable();
+            $table->boolean('pass_numbers')->default(true);
+            $table->boolean('pass_special')->default(true);
+            $table->boolean('2fa')->default(false);
         });
 
         Schema::create('clients', function (Blueprint $table) {
