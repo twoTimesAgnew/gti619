@@ -81,6 +81,11 @@ class LoginController extends Controller
             session()->put($request->cookie('sober_sec_session'), $username);
             session()->put('username', $username);
 
+            if(Setting::find(1)->value('2fa') == true && User::where('username', $username)->value('secret') !== null)
+            {
+                return redirect('otp');
+            }
+
             return redirect('home');
         }
 
@@ -138,6 +143,25 @@ class LoginController extends Controller
             session()->flush();
             Log::channel('connections')->info("Session flushed successfully.");
             return redirect('login');
+        }
+    }
+
+    public function otp()
+    {
+        return view('otp');
+    }
+
+    public function validateOtp(Request $request)
+    {
+        $googleAuthenticator = new \Dolondro\GoogleAuthenticator\GoogleAuthenticator();
+
+        if ($googleAuthenticator->authenticate(User::find(1)->value('secret'), $request->otp))
+        {
+            return redirect('home');
+        }
+        else
+        {
+            return back()->with('error', 'OTP code was invalid');
         }
     }
 

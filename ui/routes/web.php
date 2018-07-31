@@ -33,11 +33,16 @@ Route::middleware('session')->group(function() {
     # Security
     Route::post('/security', 'SecurityController@update')->name('updateSecurity');
     Route::post('/security/password', 'SecurityController@password')->name('updatePassword');
+    Route::post('/security/2fa/confirm', 'SecurityController@confirmOtp')->name('confirmOtp');
+
+    Route::get('/otp', 'Auth\LoginController@otp')->name('otp');
+    Route::post('/otp', 'Auth\LoginController@validateOtp')->name('validateOtp');
 });
 
 Route::middleware(['session', 'rbac', 'reauthenticate'])->group(function() {
     # Reauthenticate before changing security settings
     Route::get('/security', 'SecurityController@index')->name('security');
+    Route::get('/security/2fa', 'SecurityController@googleauth')->name('googleauth');
 
     # Reauthenticate to perform client operations
     Route::get('/clients/residential', 'ClientController@residentialIndex')->name('clientsResidential');

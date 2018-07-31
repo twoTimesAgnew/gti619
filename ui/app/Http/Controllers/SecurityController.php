@@ -31,6 +31,11 @@ class SecurityController extends Controller
 
         Log::channel('security')->info("[" . $request->ip() . "] modified security settings");
 
+        if($settings->{'2fa'} && User::where('username', session()->get('username'))->value('secret') == null)
+        {
+            return redirect('security/2fa')->with('message', 'It seems you have enabled 2FA but have not linked a Google Authenticator device yet.');
+        }
+
         return back()->with('message', 'Successfully updated security settings');
     }
 
@@ -68,5 +73,32 @@ class SecurityController extends Controller
         Log::channel('security')->info("[" . $request->ip() . "] changed {$user->username} password");
 
         return back()->with('passMessage', 'Successfully changed password');
+    }
+
+    public function googleauth()
+    {
+        $secretFactory = new \Dolondro\GoogleAuthenticator\SecretFactory();
+        $secret = $secretFactory->create("SoberSec", "Administrateur");
+        $secretKey = $secret->getSecretKey();
+
+        $user = User::find(1);
+        $user->secret = $secretKey;
+        $user->save();
+
+        return view('googleauth')->with('key', $secretKey);
+    }
+
+    public function confirmOtp(Request $request)
+    {
+        $googleAuthenticator = new \Dolondro\GoogleAuthenticator\GoogleAuthenticator();
+
+        if ($googleAuthenticator->authenticate(User::find(1)->value('secret'), $request->otp))
+        {
+            return redirect('security')->with('message', 'OTP code was valid');
+        }
+        else
+        {
+            return redirect('security')->with('error', 'OTP code was invalid');
+        }
     }
 }

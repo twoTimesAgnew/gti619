@@ -20,13 +20,15 @@ class DatabaseSeeder extends Seeder
         DB::table('pages')->insert([
             ['uri' => 'clients/residential'],
             ['uri' => 'clients/business'],
-            ['uri' => 'security']
+            ['uri' => 'security'],
+            ['uri' => 'security/2fa']
         ]);
 
         DB::table('access')->insert([
             ['id_role' => 1, 'id_page' => 1],
             ['id_role' => 1, 'id_page' => 2],
             ['id_role' => 1, 'id_page' => 3],
+            ['id_role' => 1, 'id_page' => 4],
             ['id_role' => 2, 'id_page' => 1],
             ['id_role' => 3, 'id_page' => 2],
         ]);
