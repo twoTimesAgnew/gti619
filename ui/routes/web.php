@@ -16,19 +16,31 @@ Route::get('/', function () {
 });
 
 Route::middleware('session')->group(function() {
+    # Dashboard
     Route::get('/home', 'HomeController@index')->name('home');
+
+    # Client routes
+    Route::post('/clients/create', 'ClientController@create')->name('create');
+    Route::post('/clients/update', 'ClientController@update')->name('update');
+    Route::get('/clients/create', 'ClientController@index')->name('addClient');
+    Route::post('/clients/edit', 'ClientController@edit')->name('edit');
+    Route::delete('/clients/delete', 'ClientController@delete')->name('delete');
+
+    # Reauthentication
+    Route::get('reauthenticate', 'ReauthenticateController@reauthenticate')->name('reauthenticate');
+    Route::post('reauthenticate', 'ReauthenticateController@processReauthenticate')->name('processReauthentication');
 });
 
 Route::middleware(['session', 'reauthenticate'])->group(function() {
-    Route::get('/clients/residential', 'Clients\ClientController@residentialIndex')->name('clientsResidential');
-    Route::get('/clients/business', 'Clients\ClientController@businessIndex')->name('clientsBusiness');
+    # Reauthenticate before changing security settings
     Route::get('/security', 'SecurityController@index')->name('security');
+
+    # Reauthenticate to perform client operations
+    Route::get('/clients/residential', 'ClientController@residentialIndex')->name('clientsResidential');
+    Route::get('/clients/business', 'ClientController@businessIndex')->name('clientsBusiness');
 });
 
 Route::get('/login', 'Auth\LoginController@index')->name('login');
 Route::post('/login', 'Auth\LoginController@validateLogin')->name('validateLogin');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
-
-Route::get('reauthenticate', 'ReauthenticateController@reauthenticate')->name('reauthenticate');
-Route::post('reauthenticate', 'ReauthenticateController@processReauthenticate')->name('processReauthentication');
 

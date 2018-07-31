@@ -7,9 +7,11 @@ services:
     command: bash -c "cp .env.example .env &&
              composer install &&
              php artisan key:generate &&
+             php artisan migrate &&
+             php artisan db:seed &&
+             chown -R www-data storage &&
              apache2-foreground"
     environment:
-      APP_NAME: Sober Sec
       APP_ENV: local
       APP_DEBUG: 1
       DB_HOST: mysql

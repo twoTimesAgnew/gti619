@@ -13,10 +13,25 @@ class InitDb extends Migration
      */
     public function up()
     {
-        Schema::create('role', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
+        });
+
+        Schema::create('pages', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->increments('id');
+            $table->string('uri');
+        });
+
+        Schema::create('access', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->increments('id');
+            $table->integer('id_role')->unsigned();
+            $table->foreign('id_role')->references('id')->on('roles');
+            $table->integer('id_page')->unsigned();
+            $table->foreign('id_page')->references('id')->on('pages');
         });
 
         Schema::create('settings', function (Blueprint $table) {
@@ -44,7 +59,8 @@ class InitDb extends Migration
             $table->string('password');
             $table->string('salt');
             $table->integer('role')->unsigned();
-            $table->foreign('role')->references('id')->on('role');
+            $table->foreign('role')->references('id')->on('roles');
+            $table->string('secret')->nullable();
             $table->string('hash_version');
             $table->timestamps();
         });
@@ -58,6 +74,10 @@ class InitDb extends Migration
     public function down()
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('role');
+        Schema::dropIfExists('access');
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('settings');
+        Schema::dropIfExists('clients');
+        Schema::dropIfExists('pages');
     }
 }

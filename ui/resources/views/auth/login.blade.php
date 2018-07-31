@@ -8,6 +8,13 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+
+                    @if (session('message'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('message') }}
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('validateLogin') }}" aria-label="{{ __('Login') }}">
                         @csrf
 
