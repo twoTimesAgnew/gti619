@@ -15,6 +15,8 @@ has a pretty serious memory leak when deploying a stack (like in this project).
 
 ## Requirements
 
+### Docker CE
+
 The only thing required to run this project is Docker CE. If you're on Windows (you shouldn't be)  
 simply go to [the following url](https://store.docker.com/editions/community/docker-ce-desktop-windows "Docker Store"), create an account and download for free.  
   
