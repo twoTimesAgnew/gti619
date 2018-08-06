@@ -78,12 +78,11 @@ $ cd /path/to/project
 
 ##### Open local_stack.yml file, and modify the source path to the project path that you just cloned:
 ```yaml
-# You will only need to bind ui, I will work on OTP
 ui:
 volumes:
       - type: bind
         source: /path/to/gti619/ui
-        target: /var/www/html/ui
+        target: /var/www/html
 ```
 **DO NOT TOUCH TARGET, ONLY SOURCE**
 
@@ -120,7 +119,6 @@ For example, `docker service logs gti_ui -f` will show everything happening as i
 ```text
 mysql : localhost:3306
 php   : localhost:8080
-otp   : localhost:8000
 redis : localhost:6379
 ```
 
